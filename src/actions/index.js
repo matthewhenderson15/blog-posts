@@ -4,9 +4,12 @@ import jsonPlaceholder from '../apis/jsonPlaceholder';
 // Gets the posts, then gets unique user ids of the posts using lodash; unique ids then used in fetchUser action creator
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
     await dispatch(fetchPosts());
-
-    const userIds = _.uniq(_.map(getState().posts, 'userId'));
-    userIds.forEach(id => dispatch(fetchUser(id)));
+    
+    _.chain(getState().posts)
+        .map('userId')
+        .uniq()
+        .forEach(id => dispatch(fetchUser(id)))
+        .value();
 };
 
 // Individual action creator for fetching posts
